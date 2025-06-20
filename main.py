@@ -2,6 +2,7 @@ import os
 import sys
 from dotenv import load_dotenv
 from google import genai
+from google.genai import types
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -18,9 +19,15 @@ if len(sys.argv) < 2:
     print("Usage: python main.py")
     sys.exit(1) # Exit if no content is provided
 
+# Create a list in order to support agent-user conversation
+messages = [
+    types.Content(role="user", parts=[types.Part(text=user_prompt)])
+]
+
 # sys.argv[1] is the first argument after the script name
 response = client.models.generate_content(
-    model='gemini-2.0-flash-001', contents=sys.argv[1]
+    model='gemini-2.0-flash-001',
+    contents=messages,
 )
 print("\n")
 print(response.text)
